@@ -24,44 +24,91 @@
     your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<nav id="main_nav" class="navbar navbar-default" role="navigation">
+
+<nav id="top_bar" class="">
     <div class="container-fluid">
-
-        <div class="row">
-            
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-
-                <a class="navbar-brand" href="<?php bloginfo('wpurl'); ?>">
-                    <img alt="<?php bloginfo('name'); ?>" src="<?php echo get_field('logo', 'option')['url']; ?>" class="desktop_logo img-responsive">
-                </a>
+        <div class="row justify-content-between align-items-center" style="margin: 0;">
+            <div class="col-4">
+                <ul class="list-inline social_wrap">
+                    <?php if (get_field('facebook_page_url', 'option')) : ?>
+                        <li class="list-inline-item"><a target="_blank" href="<?php the_field('facebook_page_url', 'option'); ?>"><i
+                                    class="fab fa-facebook-f"></i></a></li>
+                    <?php endif; ?>
+                    <?php if (get_field('twitter_page_url', 'option')) : ?>
+                        <li class="list-inline-item"><a target="_blank" href="<?php the_field('twitter_page_url', 'option'); ?>"><i class="fab fa-twitter"></i></a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if (get_field('feedburner_rss_url', 'option')) : ?>
+                        <li class="list-inline-item"><a target="_blank" href="<?php the_field('feedburner_rss_url', 'option'); ?>"><i
+                                    class="fas fa-rss"></i></a></li>
+                    <?php endif; ?>
+                    <?php if (get_field('youtube_page_url', 'option')) : ?>
+                        <li class="list-inline-item"><a target="_blank" href="<?php the_field('youtube_page_url', 'option'); ?>"><i class="fab fa-youtube"></i></a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if (get_field('instagram_page_url', 'option')) : ?>
+                        <li class="list-inline-item"><a target="_blank" href="<?php the_field('instagram_page_url', 'option'); ?>"><i
+                                    class="fab fa-instagram"></i></a></li>
+                    <?php endif; ?>
+                    <?php if (get_field('flickr_url', 'option')) : ?>
+                        <li class="list-inline-item"><a target="_blank" href="<?php the_field('flickr_url', 'option'); ?>">
+                                <i class="fab fa-flickr"></i>
+                            </a></li>
+                    <?php endif; ?>
+                </ul>
             </div>
-
-
-
-
-            <?php
-            wp_nav_menu(array(
-                    'menu' => 'Primary Menu',
-                    'theme_location' => 'primary',
-                    'depth' => 2,
-                    'container' => 'div',
-                    'container_class' => 'collapse navbar-collapse',
-                    'container_id' => 'bs-example-navbar-collapse-1',
-                    'menu_class' => 'nav navbar-nav navbar-right',
-                    'fallback_cb' => 'wp_bootstrap_navwalker::fallback',
-                    'walker' => new wp_bootstrap_navwalker())
-            );
-            ?>
-          
+            <div class="col-12 col-md-6">
+                <ul class="list-inline text-right" id="top_links">
+                    <?php if (have_rows('top_bar_links', 'option')): ?>
+                        <?php while (have_rows('top_bar_links', 'option')): the_row();
+                            // vars
+                            $link_text = get_sub_field('link_text');
+                            $link_url = get_sub_field('link_url');
+                            ?>
+                            <li class="list-inline-item">
+                                <a class="bord_bottom" href="<?php echo $link_url; ?>"><?php echo $link_text; ?></a>
+                            </li>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
+                    <li class="list-inline-item">
+                        <a id="search_wrap_top" href="<?php the_field('search_page_url', 'option'); ?>"><i class="fas fa-search"></i></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a id="donate_link" class="btn btn-primary"
+                           href="<?php the_field('donate_link_url', 'option'); ?>"><?php the_field('donate_link_text', 'option'); ?></a>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </div>
+</nav>
+
+
+<?php
+$custom_logo = get_field('header_logo', 'option');
+?>
+<nav id="main_nav" class="navbar navbar-light bg-light navbar-expand-lg justify-content-between">
+
+    <a class="navbar-brand" href="<?php echo home_url() ?>">
+        <img src="<?php echo $custom_logo['url'] ;?>" alt="<?php echo $custom_logo['alt'] ;?>" class="img-fluid">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <?php
+        wp_nav_menu( array(
+            'theme_location'  => 'primary',
+            'depth'           => 2,
+            'container'       => 'div',
+            'container_class' => 'collapse navbar-collapse',
+            'menu_class'      => 'nav navbar-nav ml-auto',
+            'fallback_cb'     => 'WP_Bootstrap_Navwalker::fallback',
+            'walker'          => new WP_Bootstrap_Navwalker()
+        ) );
+        ?>
     </div>
 </nav>
 

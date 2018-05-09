@@ -1,5 +1,5 @@
 <?php
-require_once('template_parts/vendor/wp_bootstrap_navwalker.php');
+require_once('template_parts/vendor/wp-bootstrap-navwalker.php');
 
 /**
  * Sets up theme defaults and registers support for various WordPress features.
@@ -70,6 +70,7 @@ function kb_enqueue_files() {
         /* enqueue specific page script files here */
     }
 
+    /** CSS **/
     // reboot (normalize.css)
     wp_enqueue_style('reboot', get_template_directory_uri() . "/vendor/bootstrap/css/bootstrap-reboot.min.css");
     // bootstrap
@@ -79,16 +80,17 @@ function kb_enqueue_files() {
     // main.css
     wp_enqueue_style('main', get_template_directory_uri() . "/css/main.css");
 
+    /** JS **/
     // bootstrap js
-    wp_enqueue_script('bootstrap.min', get_template_directory_uri() . '/vendor/bootstrap/js/bootstrap.min.js', array(), '1.0.0', true);
-    // modernizr
-    wp_enqueue_script('bootstrap.min', get_template_directory_uri() . '/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js', array(), '1.0.0', true);
+    wp_enqueue_script('bootstrap.min', get_template_directory_uri() . '/vendor/bootstrap/js/bootstrap.bundle.min.js', array('jquery'), '1.0.0', true);
+    // respond
+    wp_enqueue_script('respond', get_template_directory_uri() . '/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js', array(), '1.0.0', true);
     // unslider js
-    wp_enqueue_script('unslider.min', get_template_directory_uri() . '/vendor/unslider/js/unslider-min.js', array(), '1.0.0', true);
+    wp_enqueue_script('unslider.min', get_template_directory_uri() . '/vendor/unslider/js/unslider-min.js', array('jquery'), '1.0.0', true);
     // font awesome
-    wp_enqueue_script('unslider.min', get_template_directory_uri() . '/vendor/fontawesome/js/fontawesome.min.js', array(), '1.0.0', true);
+    wp_enqueue_script('fontawesome', get_template_directory_uri() . '/vendor/fontawesome/js/fontawesome-all.min.js', array(), '1.0.0', true);
     // main
-    wp_enqueue_script('main', get_template_directory_uri() . '/js/main.js', array(), '1.0.0', true);
+    wp_enqueue_script('main', get_template_directory_uri() . '/js/main.js', array('jquery'), '1.0.0', true);
 
 }
 add_action('wp_enqueue_scripts', 'kb_enqueue_files');
