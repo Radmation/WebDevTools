@@ -1,6 +1,15 @@
 <?php
 require_once('template_parts/vendor/wp-bootstrap-navwalker.php');
 
+//if (WP_LOCAL_DEV) {
+//    echo "ya";
+//    die();
+//} else {
+//    echo "no";
+//    die();
+//}
+
+
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  *
@@ -8,13 +17,12 @@ require_once('template_parts/vendor/wp-bootstrap-navwalker.php');
  * before the init hook. The init hook is too late for some features, such as indicating
  * support post thumbnails.
  */
-function kb_theme_setup()
-{
+function kb_theme_setup() {
     /**********************************************************************
      * Make theme available for translation.
      * Translations can be placed in the /languages/ directory.
      **********************************************************************/
-    load_theme_textdomain('sysa', get_template_directory() . '/languages');
+    load_theme_textdomain('ign', get_template_directory() . '/languages');
 
     // Adds RSS Feed links to the HTML <head>
     add_theme_support('automatic-feed-links');
@@ -34,8 +42,9 @@ function kb_theme_setup()
 
 add_action('after_setup_theme', 'kb_theme_setup'); // call function
 
+
 /**************************************************************************************
- * Single Page Theme Creation
+ * Create page called 'Home' and set to static page if it doesn't exist
  **************************************************************************************/
 if (get_page_by_title("Home") == null) {
     $post = array(
@@ -69,7 +78,6 @@ function kb_enqueue_files() {
     if (is_page(1)) {
         /* enqueue specific page script files here */
     }
-
     /** CSS **/
     // reboot (normalize.css)
     wp_enqueue_style('reboot', get_template_directory_uri() . "/vendor/bootstrap/css/bootstrap-reboot.min.css");
@@ -83,24 +91,26 @@ function kb_enqueue_files() {
     /** JS **/
     // bootstrap js
     wp_enqueue_script('bootstrap.min', get_template_directory_uri() . '/vendor/bootstrap/js/bootstrap.bundle.min.js', array('jquery'), '1.0.0', true);
-    // respond
-    wp_enqueue_script('respond', get_template_directory_uri() . '/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js', array(), '1.0.0', true);
     // unslider js
     wp_enqueue_script('unslider.min', get_template_directory_uri() . '/vendor/unslider/js/unslider-min.js', array('jquery'), '1.0.0', true);
-    // font awesome
+    // font awesome js
     wp_enqueue_script('fontawesome', get_template_directory_uri() . '/vendor/fontawesome/js/fontawesome-all.min.js', array(), '1.0.0', true);
-    // main
+    // main js
     wp_enqueue_script('main', get_template_directory_uri() . '/js/main.js', array('jquery'), '1.0.0', true);
-
 }
 add_action('wp_enqueue_scripts', 'kb_enqueue_files');
+
+// just use jquery included with WP and put in head
+function insert_jquery(){
+    wp_enqueue_script('jquery');
+}
+add_filter('wp_head','insert_jquery');
 
 
 /******************************************************
  * Register our sidebars and widgetized areas.
  ******************************************************/
-function kb__widgets_init()
-{
+function kb__widgets_init() {
     register_sidebar(array(
         'name' => 'Footer',
         'id' => 'footer',
@@ -115,8 +125,7 @@ add_action('widgets_init', 'kb__widgets_init');
 
 
 /* hide default editor from certain pages */
-function kb_hide_editor()
-{
+function kb_hide_editor() {
     // Get the Post ID.
     $post_id = $_GET['post'] ? $_GET['post'] : $_POST['post_ID'];
     if (!isset($post_id)) {
@@ -124,7 +133,7 @@ function kb_hide_editor()
     }
     // Hide the editor on the page titled 'Front Page'
     $homepage = get_the_title($post_id);
-    if ( $homepage == "Home" ) {
+    if ($homepage == "Home") {
 //        remove_post_type_support('page', 'editor');
     }
 
@@ -135,11 +144,11 @@ function kb_hide_editor()
         //remove_post_type_support('page', 'editor');
     }
 }
+
 add_action('admin_init', 'kb_hide_editor');
 
 /* Change the wordpress login screen logo to Client Logo */
-function kb_login_logo()
-{ ?>
+function kb_login_logo() { ?>
     <style type="text/css">
         #login h1 a, .login h1 a {
             background-image: url(<?php echo get_stylesheet_directory_uri(); ?>/img/logo.png);
@@ -149,32 +158,33 @@ function kb_login_logo()
         }
     </style>
 <?php }
+
 add_action('login_enqueue_scripts', 'kb_login_logo');
 
 
 /***********************************************
  * CUSTOM PAGE SETTINGS - acf
  ***********************************************/
-if( function_exists('acf_add_options_page') ) {
+if (function_exists('acf_add_options_page')) {
 
     acf_add_options_page(array(
-        'page_title' 	=> 'Theme General Settings',
-        'menu_title'	=> 'Theme Settings',
-        'menu_slug' 	=> 'theme-general-settings',
-        'capability'	=> 'edit_posts',
-        'redirect'		=> false
+        'page_title' => 'Theme General Settings',
+        'menu_title' => 'Theme Settings',
+        'menu_slug' => 'theme-general-settings',
+        'capability' => 'edit_posts',
+        'redirect' => false
     ));
 
     acf_add_options_sub_page(array(
-        'page_title' 	=> 'Theme Header Settings',
-        'menu_title'	=> 'Header',
-        'parent_slug'	=> 'theme-general-settings',
+        'page_title' => 'Theme Header Settings',
+        'menu_title' => 'Header',
+        'parent_slug' => 'theme-general-settings',
     ));
 
     acf_add_options_sub_page(array(
-        'page_title' 	=> 'Theme Footer Settings',
-        'menu_title'	=> 'Footer',
-        'parent_slug'	=> 'theme-general-settings',
+        'page_title' => 'Theme Footer Settings',
+        'menu_title' => 'Footer',
+        'parent_slug' => 'theme-general-settings',
     ));
 
 }
@@ -186,4 +196,5 @@ if( function_exists('acf_add_options_page') ) {
 function remove_editor_menu() {
     remove_action('admin_menu', '_add_themes_utility_last', 101);
 }
+
 add_action('_admin_menu', 'remove_editor_menu', 1);
